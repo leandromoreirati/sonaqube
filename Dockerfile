@@ -12,7 +12,7 @@ ENV SONAR_VERSION=${SONAR_VERSION} \
 
 USER root
 EXPOSE 9000
-ADD root /
+COPY root/usr/bin/permission /usr/bin/permissions
 
 RUN set -x && \
     apt-get update && \
