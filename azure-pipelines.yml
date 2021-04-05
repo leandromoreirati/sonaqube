@@ -27,5 +27,6 @@ stages:
       inputs:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        arguments: '--build-arg SONAR_VERSION=7.9.6'
         tags: |
           $(tag)
