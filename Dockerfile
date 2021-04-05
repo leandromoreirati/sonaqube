@@ -30,7 +30,8 @@ WORKDIR $SONARQUBE_HOME
 COPY startup.sh $SONARQUBE_HOME/bin/
 
 RUN useradd -c "Sonarqube service user" -s /bin/bash -m sonar
-RUN /usr/bin/fix-permissions $SONARQUBE_HOME && \
+RUN chmod +x /usr/bin/permissions && \
+    /usr/bin/permissions $SONARQUBE_HOME && \
     chmod 775 $SONARQUBE_HOME/bin/startup.sh
 
 USER sonar
