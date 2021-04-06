@@ -24,9 +24,9 @@ stages:
       inputs:
         command: build
         dockerfile: $(DockerfilePath)
-        arguments: --build-arg SONAR_VERSION=$(sonarqube_version)
+        arguments: --build-arg SONAR_VERSION=8.7.1.42226
         containerRegistry: 'docker_hub'
-        repository: $(repostory_sonarqube)
+        repository: $(sonarqube_repostory)
         tags: |
           $(tag)
 
