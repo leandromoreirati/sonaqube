@@ -2,9 +2,11 @@ FROM debian:buster-slim
 
 LABEL maintainer Leandro Moreira <leandro@leandromoreira.eti.br>
 
-ARG SONAR_VERSION=${SONAR_VERSION}
+ARG SONAR_VERSION
 
-ENV SONAR_VERSION=${SONAR_VERSION} \
+RUN echo $SONAR_VERSION
+
+ENV SONAR_VERSION=$SONAR_VERSION \
     SONARQUBE_HOME=/opt/sonarqube \
     SONARQUBE_JDBC_USERNAME=sonar \
     SONARQUBE_JDBC_PASSWORD=sonar \
@@ -12,7 +14,7 @@ ENV SONAR_VERSION=${SONAR_VERSION} \
 
 USER root
 EXPOSE 9000
-COPY root/usr/bin/permission /usr/bin/permissions
+ADD root /
 
 RUN set -x && \
     apt-get update && \
@@ -30,6 +32,7 @@ WORKDIR $SONARQUBE_HOME
 COPY startup.sh $SONARQUBE_HOME/bin/
 
 RUN useradd -c "Sonarqube service user" -s /bin/bash -m sonar
+
 RUN chown -R sonar:sonar $SONARQUBE_HOME && \
     chmod 775 $SONARQUBE_HOME/bin/startup.sh
 
