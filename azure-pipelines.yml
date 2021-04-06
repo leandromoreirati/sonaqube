@@ -28,3 +28,13 @@ stages:
         repository: 'leandromoreirajfa'
         tags: |
           $(tag)
+        
+    - task: Docker@2
+      displayName: Push Image
+      inputs:
+        containerRegistry: 'Docker Hub'
+        repository: 'leandromoreirajfa'
+        command: 'Push'
+        Dockerfile: '**/Dockerfile'
+        tags: |
+          $(tag)
