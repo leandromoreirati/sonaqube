@@ -31,6 +31,5 @@ stages:
         arguments: '--build-arg SONAR_VERSION=8.7.1.42226'
         containerRegistry: 'Docker Hub'
         repository: 'leandromoreirajfa'
-        Dockerfile: '**/Dockerfile'
         tags: |
           $(tag)
