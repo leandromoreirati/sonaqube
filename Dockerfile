@@ -4,8 +4,6 @@ LABEL maintainer Leandro Moreira <leandro@leandromoreira.eti.br>
 
 ARG SONAR_VERSION
 
-RUN echo $SONAR_VERSION
-
 ENV SONAR_VERSION=$SONAR_VERSION \
     SONARQUBE_HOME=/opt/sonarqube \
     SONARQUBE_JDBC_USERNAME=sonar \
