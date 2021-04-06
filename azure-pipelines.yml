@@ -14,7 +14,7 @@ pool:
 
 name: 
 variables:
-  tag: '$(Build.BuildId)'
+- group: sonarqube
 
 stages:
 - stage: Build
