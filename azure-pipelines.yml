@@ -24,12 +24,22 @@ stages:
     displayName: Build
     steps:
     - task: Docker@2
-      displayName: Build and Push Image
+      displayName: Build Image
       inputs:
-        command: buildAndPush
+        command: build
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         arguments: '--build-arg SONAR_VERSION=8.7.1.42226'
         containerRegistry: 'Docker Hub'
         repository: 'leandromoreirajfa'
+        tags: |
+          $(tag)
+        
+    - task: Docker@2
+      displayName: Push Image
+      inputs:
+        containerRegistry: 'Docker Hub'
+        repository: 'leandromoreirajfa'
+        command: 'Push'
+        Dockerfile: '**/Dockerfile'
         tags: |
           $(tag)
