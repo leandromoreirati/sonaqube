@@ -14,7 +14,6 @@ ENV SONAR_VERSION=$SONAR_VERSION \
 
 USER root
 EXPOSE 9000
-ADD root /
 
 RUN set -x && \
     apt-get update && \
