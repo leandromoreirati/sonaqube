@@ -25,7 +25,7 @@ stages:
         command: build
         dockerfile: $(DockerfilePath)
         arguments: --build-arg SONAR_VERSION=8.7.1.42226
-        containerRegistry: 'docker_hub'
+        containerRegistry: $(imageRegistry)
         repository: $(sonarqube_repository)
         tags: |
           $(tag)
@@ -34,7 +34,7 @@ stages:
       displayName: Push Image
       inputs:
         command: push
-        containerRegistry: $(registry)
-        repository: $(repository_sonarqube)
+        containerRegistry: $(imageRegistry)
+        repository: $(sonarqube_repository)
         tags: |
           $(tag)
