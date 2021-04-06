@@ -9,7 +9,8 @@ resources:
 - repo: self
 
 pool:
-  name: self
+  #name: self
+  vmImage: ubuntu:18.04
 
 name: 
 variables:
