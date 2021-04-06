@@ -28,7 +28,7 @@ stages:
       inputs:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        arguments: '--build-arg SONAR_VERSION=7.9.6'
+        arguments: '--build-arg SONAR_VERSION=8.7.1.42226'
         tags: |
           $(tag)
     - task: Docker@2
