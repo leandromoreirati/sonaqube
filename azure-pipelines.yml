@@ -12,7 +12,6 @@ pool:
   #name: self
   vmImage: ubuntu-16.04
 
-name: 
 variables:
 - group: sonarqube
 
