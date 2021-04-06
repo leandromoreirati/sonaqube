@@ -31,3 +31,9 @@ stages:
         arguments: '--build-arg SONAR_VERSION=7.9.6'
         tags: |
           $(tag)
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub'
+        repository: 'leandromoreirajfa'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
