@@ -104,6 +104,7 @@ objects:
             httpGet:
               port: 9000
               path: /
+              scheme: HTTP
             timeoutSeconds: 5
           readinessProbe:
             failureThreshold: 3
@@ -113,6 +114,7 @@ objects:
             httpGet:
               port: 9000
               path: /
+              scheme: HTTP
             timeoutSeconds: 5
           resources:
             requests:
@@ -120,7 +122,7 @@ objects:
               memory: 1Gi
             limits:
               cpu: 1
-              memory: 2Gi
+              memory: 4Gi
           terminationMessagePath: /dev/termination-log
           volumeMounts:
           - mountPath: /opt/sonarqube/data
@@ -133,6 +135,15 @@ objects:
         - name: sonarqube-data
           persistentVolumeClaim:
             claimName: sonarqube-data
+        - name: sonarqube-conf
+          persistentVolumeClaim:
+            claimName: sonarqube-conf
+        - name: sonarqube-temp
+          persistentVolumeClaim:
+            claimName: sonarqube-temp
+        - name: sonarqube-extensions
+          persistentVolumeClaim:
+            claimName: sonarqube-extensions
     triggers:
     - type: ConfigChange
     - imageChangeParams:
@@ -143,6 +154,23 @@ objects:
           kind: ImageStreamTag
           name: sonarqube:${SONARQUBE_VERSION}
       type: ImageChange
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: sonarqube
+    name: postgresql
+  spec:
+    tags:
+    - annotations:
+        description: The Postgresql Docker image
+        tags: sonarqube
+      from:
+        kind: DockerImage
+        #name: registry.redhat.io/rhscl/postgresql-12-rhel7:latest
+        name: leandromoreirajfa/postgres:12
+      importPolicy: {}
+      name: "12"
 - apiVersion: v1
   kind: Service
   metadata:
@@ -182,6 +210,8 @@ objects:
         labels:
           app: sonarqube
           deploymentconfig: postgresql-sonarqube
+        annotations:
+          openshift.io/scc: privileged
       spec:
         containers:
         - env:
@@ -243,7 +273,7 @@ objects:
         - postgresql
         from:
           kind: ImageStreamTag
-          name: postgresql:9.5
+          name: postgresql:12
           namespace: openshift
       type: ImageChange
     - type: ConfigChange
@@ -253,6 +283,8 @@ objects:
     name: postgresql-sonarqube-data
     labels:
       app: sonarqube
+      #annotations:
+      #  volume.beta.kubernetes.io/storage-class: glusterfs-ocs-apps 
   spec:
     accessModes:
     - ReadWriteOnce
@@ -265,6 +297,50 @@ objects:
     name: sonarqube-data
     labels:
       app: sonarqube
+      #annotations:
+      #  volume.beta.kubernetes.io/storage-class: glusterfs-ocs-apps 
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${SONAR_VOLUME_CAPACITY}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: sonarqube-conf
+    labels:
+      app: sonarqube
+      #annotations:
+      #  volume.beta.kubernetes.io/storage-class: glusterfs-ocs-apps 
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${SONAR_VOLUME_CAPACITY}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: sonarqube-temp
+    labels:
+      app: sonarqube
+      #annotations:
+      #  volume.beta.kubernetes.io/storage-class: glusterfs-ocs-apps 
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${SONAR_VOLUME_CAPACITY}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: sonarqube-extensions
+    labels:
+      app: sonarqube
+      #annotations:
+      #  volume.beta.kubernetes.io/storage-class: glusterfs-ocs-apps 
   spec:
     accessModes:
     - ReadWriteOnce
