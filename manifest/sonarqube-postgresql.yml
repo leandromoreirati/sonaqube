@@ -127,6 +127,16 @@ objects:
           volumeMounts:
           - mountPath: /opt/sonarqube/data
             name: sonarqube-data
+          - mountPath: /opt/sonarqube/conf
+            name: sonarqube-conf
+          - mountPath: /opt/sonarqube/temp
+            name: sonarqube-temp
+          - mountPath: /opt/sonarqube/extensions
+            name: sonarqube-extensions
+          - mountPath: /opt/sonarqube/logs
+            name: sonarqube-logs
+          #- mountPath: /opt/sonarqube/data/es5
+          #  name: sonar-cache-es5
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         securityContext: {}
@@ -144,6 +154,11 @@ objects:
         - name: sonarqube-extensions
           persistentVolumeClaim:
             claimName: sonarqube-extensions
+        - name: sonarqube-logs
+          persistentVolumeClaim:
+            claimName: sonarqube-logs
+        #- name: sonar-cache-es5
+        #  emptyDir: {}
     triggers:
     - type: ConfigChange
     - imageChangeParams:
@@ -337,6 +352,20 @@ objects:
   kind: PersistentVolumeClaim
   metadata:
     name: sonarqube-extensions
+    labels:
+      app: sonarqube
+      #annotations:
+      #  volume.beta.kubernetes.io/storage-class: glusterfs-ocs-apps 
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${SONAR_VOLUME_CAPACITY}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: sonarqube-logs
     labels:
       app: sonarqube
       #annotations:
