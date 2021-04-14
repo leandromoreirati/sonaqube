@@ -10,8 +10,10 @@ ENV SONAR_VERSION=$SONAR_VERSION \
     SONARQUBE_JDBC_PASSWORD=sonar \
     SONARQUBE_JDBC_URL=
 
-USER root
 EXPOSE 9000
+
+RUN groupadd -r sonarqube && \
+    useradd -c "Sonarqube Service User" -r -g sonarqube sonarqube
 
 RUN set -x && \
     apt-get update && \
@@ -20,18 +22,24 @@ RUN set -x && \
     apt-get install -y apt-transport-https ca-certificates curl wget gnupg-agent software-properties-common unzip openjdk-11-jdk wget curl && \
     cd /opt && \
     curl -o sonarqube.zip -fSL https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-$SONAR_VERSION.zip && \
+    #curl -o sonarqube.zip.asc -fSL https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-$SONAR_VERSION.zip.asc && \
+    #gpg --receive-keys CFCA4A29D26468DE && \
+    #gpg --batch --verify sonarqube.zip.asc sonarqube.zip && \
     unzip sonarqube.zip && \
     mv sonarqube-$SONAR_VERSION sonarqube && \
     rm sonarqube.zip* && \
-    rm -rf $SONARQUBE_HOME/bin/*
+    apt-get clean && \
+    rm -rf /var/cache/apt/archives/* && \
+    rm -rf $SONARQUBE_HOME/bin/* 
+    
+
 
 WORKDIR $SONARQUBE_HOME
+
 COPY startup.sh $SONARQUBE_HOME/bin/
 
-RUN useradd -c "Sonarqube service user" -s /bin/bash -m sonar
-
-RUN chown -R sonar:sonar $SONARQUBE_HOME && \
+RUN chown -R sonarqube:sonarqube $SONARQUBE_HOME && \
     chmod 775 $SONARQUBE_HOME/bin/startup.sh
 
-USER sonar
+USER sonarqube
 ENTRYPOINT ["./bin/startup.sh"]
